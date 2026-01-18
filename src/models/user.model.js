@@ -39,7 +39,6 @@ const userSchema = new Schema(
     },
     avatar: {
       type: String,
-      default: "https://geographyandyou.com/images/user-profile.png",
       validate(value) {
         if (!validator.isURL(value)) {
           throw new ApiError(400, "Invalid avatar URL");
@@ -69,10 +68,18 @@ const userSchema = new Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  if (this.isModified("password")) {
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+  }
 
-  const saltRounds = 10;
-  this.password = await bcrypt.hash(this.password, saltRounds);
+  if (!this.avatar) {
+    const nameParam = this.lastName
+      ? `${this.firstName}+${this.lastName}`
+      : this.firstName;
+    this.avatar = `https://ui-avatars.com/api/?name=${nameParam}&background=random`;
+  }
+
   next();
 });
 
