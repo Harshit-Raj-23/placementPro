@@ -2,8 +2,12 @@ import User from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import { validateRegisterData } from "../utils/validation.js";
+import {
+  validateLoginData,
+  validateRegisterData,
+} from "../utils/validation.js";
 import { uploadOnCloudinary } from "../config/cloudinary.js";
+import { OPTIONS } from "../constants.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -66,4 +70,41 @@ const register = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "User registered successfully!"));
 });
 
-export { register };
+const login = asyncHandler(async (req, res) => {
+  validateLoginData(req);
+
+  const { email, password } = req.body;
+
+  const existingUser = await User.findOne({ email });
+  if (!existingUser) {
+    throw new ApiError(404, "User does not exists!");
+  }
+
+  if (!password.isPasswordCorrect()) {
+    throw new ApiError(401, "Invalid user credentials!");
+  }
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken();
+
+  const loggedInUser = await User.findById(existingUser._id).select(
+    "-password -refreshToken",
+  );
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, OPTIONS)
+    .cookie("refreshToken", refreshToken, OPTIONS)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in successfully!",
+      ),
+    );
+});
+
+export { register, login };
