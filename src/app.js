@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 
@@ -19,5 +20,7 @@ app.use(
 app.use(express.static("public"));
 
 app.use(cookieParser());
+
+app.use(errorHandler);
 
 export default app;
