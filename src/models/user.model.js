@@ -67,7 +67,7 @@ const userSchema = new Schema(
   },
 );
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   if (this.isModified("password")) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
@@ -79,8 +79,6 @@ userSchema.pre("save", async function (next) {
       : this.firstName;
     this.avatar = `https://ui-avatars.com/api/?name=${nameParam}&background=random`;
   }
-
-  next();
 });
 
 userSchema.methods.isPasswordCorrect = async function (inputPassword) {
