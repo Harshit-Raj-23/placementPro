@@ -13,7 +13,7 @@ connectDB()
   .then(async () => {
     await seedAdmin();
     app.listen(PORT, () => {
-      console.log(`\n⚙️  Server is running at port : ${PORT}`);
+      console.log(`⚙️  Server is running at port : ${PORT}`);
     });
   })
   .catch((error) => {

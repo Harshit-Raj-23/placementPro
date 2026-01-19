@@ -21,6 +21,11 @@ app.use(express.static("public"));
 
 app.use(cookieParser());
 
+// import routes
+import authRouter from "./routes/auth.route.js";
+
+app.use("/auth", authRouter);
+
 app.use(errorHandler);
 
 export default app;
