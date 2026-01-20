@@ -50,6 +50,11 @@ const companySchema = new Schema(
     foundedYear: {
       type: Number,
     },
+    isApproved: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   {
     timestamps: true,
