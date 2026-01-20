@@ -53,9 +53,34 @@ const validateUserData = (req) => {
   }
 };
 
+const validateRegisterCompanyData = (req) => {
+  const { companyName, description, website, location, industry, foundedYear } =
+    req.body;
+
+  if (!companyName) {
+    throw new ApiError(400, "Company name is required!");
+  } else if (!description) {
+    throw new ApiError(400, "Company Description is required!");
+  } else if (!website || !validator.isURL(website)) {
+    throw new ApiError(400, "Company Website is not valid!");
+  } else if (!location) {
+    throw new ApiError(400, "Company Location is required!");
+  } else if (!industry) {
+    throw new ApiError(400, "Company Industry is required!");
+  }
+
+  if (foundedYear) {
+    const currentYear = new Date().getFullYear();
+    if (isNaN(foundedYear) || foundedYear < 1800 || foundedYear > currentYear) {
+      throw new ApiError(400, "Invalid Founded Year!");
+    }
+  }
+};
+
 export {
   validateRegisterData,
   validateLoginData,
   validateChangePasswordData,
   validateUserData,
+  validateRegisterCompanyData,
 };
