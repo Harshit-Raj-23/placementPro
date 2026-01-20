@@ -44,4 +44,18 @@ const validateChangePasswordData = (req) => {
   }
 };
 
-export { validateRegisterData, validateLoginData, validateChangePasswordData };
+const validateUserData = (req) => {
+  const { firstName, email } = req.body;
+  if (!firstName) {
+    throw new ApiError(400, "FirstName is required!");
+  } else if (!email || !validator.isEmail(email)) {
+    throw new ApiError(400, "Email is not valid!");
+  }
+};
+
+export {
+  validateRegisterData,
+  validateLoginData,
+  validateChangePasswordData,
+  validateUserData,
+};
