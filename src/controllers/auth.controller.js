@@ -75,16 +75,19 @@ const login = asyncHandler(async (req, res) => {
 
   const { email, password } = req.body;
 
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email }).select("+password");
   if (!existingUser) {
     throw new ApiError(404, "User does not exists!");
   }
 
-  if (!password.isPasswordCorrect()) {
+  const isPasswordValid = await existingUser.isPasswordCorrect(password);
+  if (!isPasswordValid) {
     throw new ApiError(401, "Invalid user credentials!");
   }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefreshToken();
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    existingUser._id,
+  );
 
   const loggedInUser = await User.findById(existingUser._id).select(
     "-password -refreshToken",

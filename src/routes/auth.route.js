@@ -11,8 +11,8 @@ authRouter.route("/register").post(
       name: "avatar",
       maxCount: 1,
     },
-    register,
   ]),
+  register,
 );
 
 authRouter.route("/login").post(login);
