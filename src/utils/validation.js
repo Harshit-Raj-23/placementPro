@@ -29,4 +29,19 @@ const validateLoginData = (req) => {
   }
 };
 
-export { validateRegisterData, validateLoginData };
+const validateChangePasswordData = (req) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !validator.isStrongPassword(currentPassword)) {
+    throw new ApiError(
+      400,
+      "Current password is weak! (Needs 1 Uppercase, 1 Symbol, 8+ Chars)",
+    );
+  } else if (!newPassword || !validator.isStrongPassword(newPassword)) {
+    throw new ApiError(
+      400,
+      "New password is weak! (Needs 1 Uppercase, 1 Symbol, 8+ Chars)",
+    );
+  }
+};
+
+export { validateRegisterData, validateLoginData, validateChangePasswordData };
