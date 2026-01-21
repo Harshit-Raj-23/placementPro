@@ -1,5 +1,6 @@
 import validator from "validator";
 import ApiError from "./ApiError.js";
+import { COMPANY_STATUS } from "../constants.js";
 
 const validateRegisterData = (req) => {
   const { firstName, email, password, role } = req.body;
@@ -90,11 +91,15 @@ const validateCompanyData = (req) => {
   }
 };
 
-const validateCompanyApproval = (req) => {
-  const { isApproved } = req.body;
+const validateCompanyStatus = (req) => {
+  const allowedStatus = Object.values(COMPANY_STATUS);
+  const { status } = req.body;
 
-  if (typeof isApproved !== "boolean") {
-    throw new ApiError(400, "isApproved (boolean) is required!");
+  if (!allowedStatus.includes(status)) {
+    throw new ApiError(
+      400,
+      `Invalid status! Allowed: ${allowedStatus.join(", ")}`,
+    );
   }
 };
 
@@ -105,5 +110,5 @@ export {
   validateUserData,
   validateRegisterCompanyData,
   validateCompanyData,
-  validateCompanyApproval,
+  validateCompanyStatus,
 };

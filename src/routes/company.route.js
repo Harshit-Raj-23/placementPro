@@ -6,7 +6,7 @@ import {
   getCompanyById,
   getCompanyProfile,
   registerCompany,
-  toggleCompanyApproval,
+  updateCompanyStatus,
   updateCompanyDetails,
   updateCompanyLogo,
 } from "../controllers/company.controller.js";
@@ -29,6 +29,6 @@ companyRouter.route("/:companyId").get(getCompanyById);
 
 companyRouter
   .route("/:companyId/status")
-  .patch(verifyRole(["Admin"]), toggleCompanyApproval);
+  .patch(verifyRole(["Admin"]), updateCompanyStatus);
 
 export default companyRouter;

@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import validator from "validator";
 import ApiError from "../utils/ApiError.js";
+import { COMPANY_STATUS } from "../constants.js";
 
 const companySchema = new Schema(
   {
@@ -50,11 +51,33 @@ const companySchema = new Schema(
     foundedYear: {
       type: Number,
     },
-    isApproved: {
-      type: Boolean,
-      default: false,
+    status: {
+      type: String,
+      enum: Object.values(COMPANY_STATUS),
+      default: COMPANY_STATUS.PENDING,
       required: true,
+      index: true,
     },
+    statusHistory: [
+      {
+        status: {
+          type: String,
+          required: true,
+        },
+        updatedBy: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        updatedAt: {
+          type: Date,
+          default: Date.now,
+        },
+        comment: {
+          type: String,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

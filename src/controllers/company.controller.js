@@ -2,12 +2,13 @@ import {
   deleteFromCloudinary,
   uploadOnCloudinary,
 } from "../config/cloudinary.js";
+import { COMPANY_STATUS } from "../constants.js";
 import Company from "../models/company.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import {
-  validateCompanyApproval,
+  validateCompanyStatus,
   validateCompanyData,
   validateRegisterCompanyData,
 } from "../utils/validation.js";
@@ -42,7 +43,7 @@ const registerCompany = asyncHandler(async (req, res) => {
     location,
     industry,
     foundedYear,
-    isApproved: false,
+    status: COMPANY_STATUS.PENDING,
   });
 
   return res
@@ -151,30 +152,38 @@ const updateCompanyLogo = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, company, "Company logo updated successfully!"));
 });
 
-const toggleCompanyApproval = asyncHandler(async (req, res) => {
-  validateCompanyApproval(req);
+const updateCompanyStatus = asyncHandler(async (req, res) => {
+  validateCompanyStatus(req);
 
-  const { isApproved } = req.body;
   const { companyId } = req.params;
+  const { status, comment } = req.body;
 
   const company = await Company.findById(companyId);
   if (!company) {
     throw new ApiError(404, "Company not found!");
   }
 
-  company.isApproved = isApproved;
-  await company.save();
+  if (company.status === status) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, company, "Status is already up to date!"));
+  }
 
-  const statusMessage = isApproved ? "Approved" : "Rejected";
+  const statusUpdate = {
+    status,
+    comment: comment || "Status updated by Admin.",
+    updatedBy: req.user._id,
+    updatedAt: new Date(),
+  };
+
+  company.status = status;
+  company.statusHistory.push(statusUpdate);
+  await company.save();
 
   return res
     .status(200)
     .json(
-      new ApiResponse(
-        200,
-        company,
-        `Company status updated to ${statusMessage}!`,
-      ),
+      new ApiResponse(200, company, `Company status updated to ${status}!`),
     );
 });
 
@@ -184,5 +193,5 @@ export {
   getCompanyById,
   updateCompanyDetails,
   updateCompanyLogo,
-  toggleCompanyApproval,
+  updateCompanyStatus,
 };
