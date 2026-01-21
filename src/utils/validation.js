@@ -75,10 +75,35 @@ const validateRegisterCompanyData = (req) => {
   }
 };
 
+const validateCompanyData = (req) => {
+  const { website, foundedYear } = req.body;
+
+  if (website && !validator.isURL(website)) {
+    throw new ApiError(400, "Company Website is not valid!");
+  }
+
+  if (foundedYear) {
+    const currentYear = new Date().getFullYear();
+    if (isNaN(foundedYear) || foundedYear < 1800 || foundedYear > currentYear) {
+      throw new ApiError(400, "Invalid Founded Year!");
+    }
+  }
+};
+
+const validateCompanyApproval = (req) => {
+  const { isApproved } = req.body;
+
+  if (typeof isApproved !== "boolean") {
+    throw new ApiError(400, "isApproved (boolean) is required!");
+  }
+};
+
 export {
   validateRegisterData,
   validateLoginData,
   validateChangePasswordData,
   validateUserData,
   validateRegisterCompanyData,
+  validateCompanyData,
+  validateCompanyApproval,
 };
