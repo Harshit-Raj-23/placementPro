@@ -45,10 +45,8 @@ const validateChangePasswordData = (req) => {
 };
 
 const validateUserData = (req) => {
-  const { firstName, email } = req.body;
-  if (!firstName) {
-    throw new ApiError(400, "FirstName is required!");
-  } else if (!email || !validator.isEmail(email)) {
+  const { email } = req.body;
+  if (email && !validator.isEmail(email)) {
     throw new ApiError(400, "Email is not valid!");
   }
 };

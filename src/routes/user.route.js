@@ -21,7 +21,7 @@ userRouter
   .patch(verifyJWT, editUserDetails);
 
 userRouter
-  .route("avatar")
+  .route("/avatar")
   .patch(verifyJWT, upload.single("avatar"), editUserAvatar)
   .delete(verifyJWT, deleteUserAvatar);
 
