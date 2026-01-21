@@ -108,7 +108,7 @@ const updateCompanyDetails = asyncHandler(async (req, res) => {
   if (industry) company.industry = industry;
   if (foundedYear) company.foundedYear = foundedYear;
 
-  await company.save({ validateBeforeSave: false });
+  await company.save();
 
   const updatedCompany = await Company.findOne({ owner: req.user._id });
 

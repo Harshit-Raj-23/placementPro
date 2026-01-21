@@ -61,8 +61,8 @@ const companySchema = new Schema(
   },
 );
 
-companySchema.pre("save", async function (next) {
-  if (!this.isModified("website")) return next();
+companySchema.pre("save", async function () {
+  if (!this.isModified("website")) return;
 
   if (!this.website.match(/^https?:\/\//)) {
     this.website = `https://${this.website}`;
