@@ -30,3 +30,25 @@ export const JOB_STATUS = {
   OPEN: "Open",
   CLOSED: "Closed",
 };
+
+export const STUDENT_DEGREE = {
+  BTECH: "B.Tech",
+  MTECH: "M.Tech",
+  MCA: "MCA",
+  BCA: "BCA",
+};
+
+export const STUDENT_BRANCH = {
+  CS: "CS",
+  AI: "AI",
+  ECE: "ECE",
+  EEE: "EEE",
+  CIVIL: "Civil",
+  MECH: "Mech",
+};
+
+export const STUDENT_PLACEMENT_STATUS = {
+  UNPLACED: "Unplaced",
+  PLACED: "Placed",
+  DEBARRED: "Debarred",
+};
