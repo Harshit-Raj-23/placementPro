@@ -1,6 +1,6 @@
 import validator from "validator";
 import ApiError from "./ApiError.js";
-import { COMPANY_STATUS } from "../constants.js";
+import { COMPANY_STATUS, JOB_TYPES } from "../constants.js";
 
 const validateRegisterData = (req) => {
   const { firstName, email, password, role } = req.body;
@@ -103,6 +103,62 @@ const validateCompanyStatus = (req) => {
   }
 };
 
+const validateCreateJobData = (req) => {
+  const { title, description, attachment, type, location, salary } = req.body;
+
+  if (!title) {
+    throw new ApiError(400, "Job title is required!");
+  } else if (!description) {
+    throw new ApiError(400, "Job description is required!");
+  } else if (attachment && !validator.isURL(attachment)) {
+    throw new ApiError(400, "Job attachment is not valid!");
+  } else if (!type || !Object.values(JOB_TYPES).includes(type)) {
+    throw new ApiError(
+      400,
+      `Job type is required! Allowed: ${Object.values(JOB_TYPES).join(", ")}`,
+    );
+  } else if (!location) {
+    throw new ApiError(400, "Job location is required!");
+  }
+
+  if (mode && !Object.values(JOB_MODE).includes(mode)) {
+    throw new ApiError(
+      400,
+      `Invalid Job Mode! Allowed: ${Object.values(JOB_MODE).join(", ")}`,
+    );
+  }
+
+  if (salary) {
+    const { minCTC, maxCTC, stipend } = salary;
+
+    if (type !== JOB_TYPES.INTERNSHIP) {
+      if (minCTC < 0 || maxCTC < 0)
+        throw new ApiError(400, "Salary cannot be negative.");
+      if (minCTC > maxCTC)
+        throw new ApiError(400, "Min CTC cannot be greater than Max CTC.");
+    }
+
+    if (type === JOB_TYPES.INTERNSHIP && stipend < 0) {
+      throw new ApiError(400, "Stipend cannot be negative.");
+    }
+  }
+
+  if (min10th < 0 || min10th > 100)
+    throw new ApiError(400, "10th Percentage must be between 0-100.");
+  if (min12th < 0 || min12th > 100)
+    throw new ApiError(400, "12th Percentage must be between 0-100.");
+  if (minCGPA < 0 || minCGPA > 10)
+    throw new ApiError(400, "CGPA must be between 0-10.");
+
+  if (noOfOpenings && noOfOpenings < 1) {
+    throw new ApiError(400, "Number of openings must be at least 1.");
+  }
+
+  if (new Date(deadline) < new Date()) {
+    new ApiError(400, "Deadline must be a future date!");
+  }
+};
+
 export {
   validateRegisterData,
   validateLoginData,
@@ -111,4 +167,5 @@ export {
   validateRegisterCompanyData,
   validateCompanyData,
   validateCompanyStatus,
+  validateCreateJobData,
 };

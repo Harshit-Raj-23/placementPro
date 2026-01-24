@@ -117,7 +117,7 @@ const jobSchema = new Schema(
         },
         historyAllowed: {
           type: Boolean,
-          true: true,
+          default: true,
         },
       },
     },
