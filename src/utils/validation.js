@@ -1,6 +1,6 @@
 import validator from "validator";
 import ApiError from "./ApiError.js";
-import { COMPANY_STATUS, JOB_TYPES } from "../constants.js";
+import { COMPANY_STATUS, JOB_TYPES, JOB_MODE } from "../constants.js";
 
 const validateRegisterData = (req) => {
   const { firstName, email, password, role } = req.body;
@@ -104,28 +104,44 @@ const validateCompanyStatus = (req) => {
 };
 
 const validateCreateJobData = (req) => {
-  const { title, description, attachment, type, location, salary } = req.body;
+  const {
+    title,
+    description,
+    attachment,
+    type,
+    mode,
+    location,
+    salary,
+    eligibility,
+    noOfOpenings,
+    deadline,
+    rounds,
+  } = req.body;
 
   if (!title) {
     throw new ApiError(400, "Job title is required!");
-  } else if (!description) {
+  }
+  if (!description) {
     throw new ApiError(400, "Job description is required!");
-  } else if (attachment && !validator.isURL(attachment)) {
+  }
+  if (attachment && !validator.isURL(attachment)) {
     throw new ApiError(400, "Job attachment is not valid!");
-  } else if (!type || !Object.values(JOB_TYPES).includes(type)) {
+  }
+
+  if (!type || !Object.values(JOB_TYPES).includes(type)) {
     throw new ApiError(
       400,
       `Job type is required! Allowed: ${Object.values(JOB_TYPES).join(", ")}`,
     );
-  } else if (!location) {
-    throw new ApiError(400, "Job location is required!");
   }
-
   if (mode && !Object.values(JOB_MODE).includes(mode)) {
     throw new ApiError(
       400,
       `Invalid Job Mode! Allowed: ${Object.values(JOB_MODE).join(", ")}`,
     );
+  }
+  if (!location) {
+    throw new ApiError(400, "Job location is required!");
   }
 
   if (salary) {
@@ -133,29 +149,57 @@ const validateCreateJobData = (req) => {
 
     if (type !== JOB_TYPES.INTERNSHIP) {
       if (minCTC < 0 || maxCTC < 0)
-        throw new ApiError(400, "Salary cannot be negative.");
+        throw new ApiError(400, "Salary cannot be negative!");
       if (minCTC > maxCTC)
-        throw new ApiError(400, "Min CTC cannot be greater than Max CTC.");
+        throw new ApiError(400, "Min CTC cannot be greater than Max CTC!");
     }
 
     if (type === JOB_TYPES.INTERNSHIP && stipend < 0) {
-      throw new ApiError(400, "Stipend cannot be negative.");
+      throw new ApiError(400, "Stipend cannot be negative!");
     }
   }
 
-  if (min10th < 0 || min10th > 100)
-    throw new ApiError(400, "10th Percentage must be between 0-100.");
-  if (min12th < 0 || min12th > 100)
-    throw new ApiError(400, "12th Percentage must be between 0-100.");
-  if (minCGPA < 0 || minCGPA > 10)
-    throw new ApiError(400, "CGPA must be between 0-10.");
+  if (!eligibility) {
+    throw new ApiError(400, "Eligibility criteria is required!");
+  } else {
+    const { batch, degree, branches, min10th, min12th, minCGPA } = eligibility;
 
-  if (noOfOpenings && noOfOpenings < 1) {
-    throw new ApiError(400, "Number of openings must be at least 1.");
+    if (!batch || !Array.isArray(batch) || batch.length === 0) {
+      throw new ApiError(400, "At least one target Batch is required!");
+    }
+    if (!degree || !Array.isArray(degree) || degree.length === 0) {
+      throw new ApiError(400, "At lease one target Degree is required!");
+    }
+    if (!branches || !Array.isArray(branches) || branches.length === 0) {
+      throw new ApiError(400, "At lease one target Branch is required!");
+    }
+    if (min10th && (min10th < 0 || min10th > 100)) {
+      throw new ApiError(400, "10th Percentage must be between 0-100!");
+    }
+    if (min12th && (min12th < 0 || min12th > 100)) {
+      throw new ApiError(400, "12th Percentage must be between 0-100!");
+    }
+    if (minCGPA && (minCGPA < 0 || minCGPA > 10)) {
+      throw new ApiError(400, "CGPA must be between 0-10!");
+    }
   }
 
-  if (new Date(deadline) < new Date()) {
-    new ApiError(400, "Deadline must be a future date!");
+  if (noOfOpenings && noOfOpenings < 1) {
+    throw new ApiError(400, "Number of openings must be at least 1!");
+  }
+  if (!deadline || new Date(deadline) < new Date()) {
+    throw new ApiError(400, "Deadline must be a future date!");
+  }
+
+  if (rounds && Array.isArray(rounds)) {
+    rounds.forEach((round, index) => {
+      if (!round.name) {
+        throw new ApiError(400, `Round ${index + 1} name is missing!`);
+      }
+      if (!round.date) {
+        throw new ApiError(400, `Round ${index + 1} date is missing!`);
+      }
+    });
   }
 };
 
