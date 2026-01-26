@@ -6,14 +6,17 @@ const validateRegisterData = (req) => {
   const { firstName, email, password, role } = req.body;
   if (!firstName) {
     throw new ApiError(400, "FirstName is required!");
-  } else if (!email || !validator.isEmail(email)) {
+  }
+  if (!email || !validator.isEmail(email)) {
     throw new ApiError(400, "Email is not valid!");
-  } else if (!password || !validator.isStrongPassword(password)) {
+  }
+  if (!password || !validator.isStrongPassword(password)) {
     throw new ApiError(
       400,
       "Password is weak! (Needs 1 Uppercase, 1 Symbol, 8+ Chars)",
     );
-  } else if (role && !["Company", "Student"].includes(role)) {
+  }
+  if (role && !["Company", "Student"].includes(role)) {
     throw new ApiError(400, "Role must be either Company or Student!");
   }
 };
@@ -22,7 +25,8 @@ const validateLoginData = (req) => {
   const { email, password } = req.body;
   if (!email || !validator.isEmail(email)) {
     throw new ApiError(400, "Email is not valid!");
-  } else if (!password || !validator.isStrongPassword(password)) {
+  }
+  if (!password || !validator.isStrongPassword(password)) {
     throw new ApiError(
       400,
       "Password is weak! (Needs 1 Uppercase, 1 Symbol, 8+ Chars)",
@@ -37,7 +41,8 @@ const validateChangePasswordData = (req) => {
       400,
       "Current password is weak! (Needs 1 Uppercase, 1 Symbol, 8+ Chars)",
     );
-  } else if (!newPassword || !validator.isStrongPassword(newPassword)) {
+  }
+  if (!newPassword || !validator.isStrongPassword(newPassword)) {
     throw new ApiError(
       400,
       "New password is weak! (Needs 1 Uppercase, 1 Symbol, 8+ Chars)",
@@ -58,13 +63,17 @@ const validateRegisterCompanyData = (req) => {
 
   if (!companyName) {
     throw new ApiError(400, "Company name is required!");
-  } else if (!description) {
+  }
+  if (!description) {
     throw new ApiError(400, "Company Description is required!");
-  } else if (!website || !validator.isURL(website)) {
+  }
+  if (!website || !validator.isURL(website)) {
     throw new ApiError(400, "Company Website is not valid!");
-  } else if (!location) {
+  }
+  if (!location) {
     throw new ApiError(400, "Company Location is required!");
-  } else if (!industry) {
+  }
+  if (!industry) {
     throw new ApiError(400, "Company Industry is required!");
   }
 
