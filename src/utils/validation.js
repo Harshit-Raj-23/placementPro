@@ -133,9 +133,6 @@ const validateCreateJobData = (req) => {
   if (!description) {
     throw new ApiError(400, "Job description is required!");
   }
-  if (attachment && !validator.isURL(attachment)) {
-    throw new ApiError(400, "Job attachment is not valid!");
-  }
 
   if (!type || !Object.values(JOB_TYPES).includes(type)) {
     throw new ApiError(
