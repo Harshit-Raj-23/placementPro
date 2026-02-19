@@ -116,7 +116,6 @@ const validateCreateJobData = (req) => {
   const {
     title,
     description,
-    attachment,
     type,
     mode,
     location,

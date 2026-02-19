@@ -89,7 +89,7 @@ const editUserDetails = asyncHandler(async (req, res) => {
   const { firstName, lastName, email } = req.body;
 
   const existingUser = await User.findOne({ email });
-  if (existingUser && existingUser._id.toString() !== req.user.toString()) {
+  if (existingUser && existingUser._id.toString() !== req.user._id.toString()) {
     throw new ApiError(400, `User with ${email} already exists!`);
   }
 
@@ -126,6 +126,7 @@ const editUserAvatar = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findById(req.user._id);
+  // If user avatar contains cloudinary url then delete it from cloudinary
   if (user.avatar && !user.avatar.includes("ui-avatars.com")) {
     await deleteFromCloudinary(user.avatar);
   }

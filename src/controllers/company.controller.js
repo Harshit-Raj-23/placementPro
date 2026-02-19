@@ -31,7 +31,7 @@ const registerCompany = asyncHandler(async (req, res) => {
 
   const logo = await uploadOnCloudinary(logoLocalPath);
   if (!logo?.url) {
-    throw new ApiError(500, "Logo upload failed!");
+    throw new ApiError(500, "Error while uploading logo!");
   }
 
   const newCompany = await Company.create({

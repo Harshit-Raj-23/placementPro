@@ -43,7 +43,7 @@ const createJob = asyncHandler(async (req, res) => {
   if (attachmentLocalPath) {
     const attachment = await uploadOnCloudinary(attachmentLocalPath);
     if (!attachment?.url) {
-      throw new ApiError(500, "Attachment upload failed!");
+      throw new ApiError(500, "Error while uploading attachment!");
     }
     attachmentUrl = attachment.url;
   }
@@ -74,7 +74,13 @@ const createJob = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(201, newJob, "Job posted successfully!"));
+    .json(
+      new ApiResponse(
+        201,
+        newJob,
+        "Job application created successfully! Please wait for Admin approval.",
+      ),
+    );
 });
 
 const getAllJobs = asyncHandler(async (req, res) => {

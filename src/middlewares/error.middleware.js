@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import ApiError from "../utils/ApiError.js";
 
-const errorHandler = async (err, req, res, next) => {
+const errorHandler = async (err, _, res, _) => {
   let error = err;
   if (!(error instanceof ApiError)) {
     const statusCode =
