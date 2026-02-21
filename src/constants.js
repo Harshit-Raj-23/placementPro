@@ -31,6 +31,12 @@ export const JOB_STATUS = {
   CLOSED: "Closed",
 };
 
+export const STUDENT_GENDER = {
+  MALE: "Male",
+  FEMALE: "Female",
+  OTHERS: "Others",
+};
+
 export const STUDENT_DEGREE = {
   BTECH: "B.Tech",
   MTECH: "M.Tech",
@@ -51,4 +57,19 @@ export const STUDENT_PLACEMENT_STATUS = {
   UNPLACED: "Unplaced",
   PLACED: "Placed",
   DEBARRED: "Debarred",
+};
+
+export const STUDENT_DOCUMENT_TYPES = {
+  RESUME: "Resume",
+  MARKSHEET: "Marksheet",
+  CERTIFICATE: "Certificate",
+  OFFER_LETTER: "Offer Letter",
+  OTHER: "Other",
+};
+
+export const STUDENT_EXPERIENCE_TYPE = {
+  INTERNSHIP: "Internship",
+  FULLTIME: "Full-Time",
+  PARTTIME: "Part-Time",
+  FREELANCE: "Freelance",
 };
